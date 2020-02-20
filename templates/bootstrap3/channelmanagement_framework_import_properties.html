@@ -1,0 +1,94 @@
+<patTemplate:tmpl name="pageoutput" unusedvars="strip">
+	<script type="text/javascript">
+		<!--
+		var properties_to_import = '{PROPERTY_ID_STRING}';
+		var channel_name = '{CHANNEL_NAME}';
+		var ajax_url = '{JOMRES_SITEPAGE_URL_AJAX}';
+		var loading_content = 'Please wait';
+		
+		
+		function block_interface()	{
+			jomresJquery.blockUI({ 
+			message: '<h3>Importing properties</h3>Currently importing property : <div id="property_id_being_imported"></div><br/> The page will reload when the properties have been imported, but it is important that you do not interrupt the process.',
+			baseZ: 1030,
+			css: { 
+				border: 'none', 
+				padding: '15px', 
+				backgroundColor: '#000', 
+				'-webkit-border-radius': '10px', 
+				'-moz-border-radius': '10px', 
+				opacity: .8, 
+				color: '#fff' 
+			} });
+		};
+
+		function import_properties(){
+			block_interface();
+			if (properties_to_import.length ){
+				setTimeout(function(){
+					properties = properties_to_import.split(",");
+					for (var i = 0, l = properties.length; i < l; i++) {
+						property_id = properties[i];
+						if (property_id != '') {
+							jomresJquery( "#property_id_being_imported" ).html( property_id );
+							jomresJquery.ajax({ url: '{JOMRES_SITEPAGE_URL_AJAX}&task=channelmanagement_framework_import_property_ajax&remote_property_id=' + property_id + '&channel_name='+channel_name, success: function (data) {
+								//console.log(data);
+							}, async: false
+							});
+						}
+						 if ( i ==properties.length-1)
+				  			window.location = '{JOMRES_SITEPAGE_URL}&task=channelmanagement_framework';
+					}
+				},3000);
+			}
+			else 
+	 			jomresJquery.unblockUI();
+
+	 		return false;
+		}
+
+		function import_remote_properties(){
+			import_properties(properties_to_import);
+		}
+		
+		
+		jomresJquery('.btn').on('click', function() {
+			var $this = jomresJquery(this);
+			$this.button('loading');
+			setTimeout(function() {
+			   $this.button('reset');
+		   }, 8000);
+		});
+
+		//-->
+	</script>
+
+	<h2 class="page-header">{PAGETITLE}</h2>
+	<style>
+	.modal-body {
+		max-height: 600px;
+		overflow-y: auto;
+		}
+		
+	</style>
+
+	<div class="row-fluid">
+		<div class="col-md-4">
+			<a href="javascript:void(0);" onclick="import_remote_properties();" id="import_properties" class="btn btn-primary btn-large">Import properties</a>
+		</div>
+		<div class="col-md-8">
+			<div class="row-fluid">
+				Properties to be imported
+			</div>
+			<patTemplate:tmpl name="property_names" unusedvars="strip">
+			<div class="col-md-6">
+				{REMOTE_PROPERTY_NAME}
+			</div>
+			<div class="col-md-6">
+				{REMOTE_PROPERTY_ID}
+			</div>
+			</patTemplate:tmpl>
+		</div>
+	</div>
+
+</patTemplate:tmpl>

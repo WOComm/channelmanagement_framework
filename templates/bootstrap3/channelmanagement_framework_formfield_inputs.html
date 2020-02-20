@@ -1,0 +1,17 @@
+<patTemplate:tmpl name="pageoutput" unusedvars="strip">
+
+<h3>{TITLE}</h3>
+<p class="alert alert-info">{INFO}</p>
+
+<form action="{JOMRES_SITEPAGE_URL_NOSEF}" method="post" name="adminForm" class="form-horizontal" role="form">
+	<patTemplate:tmpl name="rows" unusedvars="strip">
+	{FIELD}
+	</patTemplate:tmpl>
+	
+	<input type="hidden" name="task" value="channelmanagement_framework_user_accounts_save"/>
+	<input type="hidden" name="no_html" value="1"/>
+	{CSRF_TOKEN}
+	{JOMRESTOOLBAR}
+</form>
+
+</patTemplate:tmpl>
