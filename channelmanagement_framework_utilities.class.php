@@ -22,6 +22,95 @@ class channelmanagement_framework_utilities
 		
 	}
 
+	public static function get_channel_ids_for_channel_name ( $channel_name = '' )
+	{
+		if (!isset($channel_name) || $channel_name == '' ) {
+			throw new Exception( "channel_name not set" );
+		}
+
+		$query = "SELECT id FROM #__jomres_channelmanagement_framework_channels WHERE channel_name = '".$channel_name."'";
+		$result = doSelectSql($query);
+
+		$channel_ids = array();
+		if (!empty($result)) {
+			foreach ($result as $channel) {
+				$channel_ids[] = $channel->id;
+			}
+		}
+		return $channel_ids;
+	}
+
+	/*
+	 *
+	 * Insert or update a queue item. If the item's unique id already exists for this property then just the item description and completed flag can be set
+	 *
+	 * Returns the id of the queue item
+	 *
+	 */
+	public static function store_queue_item ( $item )
+	{
+
+		if ( !isset($item['channel_name']) || $item['channel_name'] == '' ) {
+			throw new Exception( "channel_name not set" );
+		}
+
+		if (!isset($item['local_property_id']) || $item['local_property_id'] == 0 ) {
+			throw new Exception( "local_property_id not set" );
+		}
+
+		if (!isset($item['unique_id']) || $item['unique_id'] == '' ) {
+			throw new Exception( "xxx not set" );
+		}
+
+		if (!isset($item['item']) ) {
+			throw new Exception( "item not set" );
+		}
+
+		if (!isset($item['completed']) ) {
+			$item['completed'] = false;
+		}
+
+		// See if the queue item already exists
+
+		$query = "SELECT id , channel_id FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE unique_id = '".$item['unique_id']."' LIMIT 1";
+		$result = doSelectSql($query , 1 );
+
+		if ( empty($result) ) {
+			$query = "INSERT INTO #__jomres_channelmanagement_framework_changelog_queue_items
+						(
+						`channel_name`,
+						`property_uid`,
+						`unique_id`,
+						`date_added`,
+						`completed`,
+						`item`
+						)
+						VALUES 
+						(
+						'".$item['channel_name']."',
+						".(int)$item['local_property_id'].",
+						'".$item['unique_id']."',
+						'".date("Y-m-d H:i:s")."',
+						'".(int)$item['completed']."',
+						'".serialize($item['item'])."'
+						)
+						";
+			$id = doInsertSql($query);
+		} else {
+			$query = "UPDATE #__jomres_channelmanagement_framework_changelog_queue_items SET
+						 `completed` = '".$item['completed']."', 
+						 `item` = '".serialize($item['item'])."'
+						 WHERE 
+						 `unique_id` = '".$result."' AND
+						 `property_uid` = ".(int)$item['local_property_id']." 
+						 LIMIT 1
+						 ";
+			doInsertSql($query);
+			$id = $result;
+		}
+		return $id;
+	}
+
 	public static function get_current_channel( $obj = object , $pattern = array() )
 	{
 		if ( !is_object($obj) ) {

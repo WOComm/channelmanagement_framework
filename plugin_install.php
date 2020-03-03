@@ -77,3 +77,21 @@ $query = "CREATE TABLE IF NOT EXISTS `#__jomres_channelmanagement_framework_book
 
 doInsertSql($query,"");
 
+
+
+$query = "CREATE TABLE IF NOT EXISTS `#__jomres_channelmanagement_framework_changelog_queue_items` (
+	`id` int(10) NOT NULL auto_increment,
+	`channel_name` varchar(255),
+	`property_uid` int(10),
+	`unique_id` varchar(255),
+	`date_added` datetime default NULL ,
+	`completed` BOOL NOT NULL DEFAULT '0',
+	`item` longtext,
+  PRIMARY KEY  (id)
+)";
+
+doInsertSql($query,"");
+
+
+$jomres_cron->addJob('get_remote_changelog_items', 'QH', '');
+$jomres_cron->addJob('process_remote_changelog_items', 'QH', '');

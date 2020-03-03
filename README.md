@@ -26,5 +26,7 @@ Trigger aide-memoire
 
 27330 Thin channel plugins have a 27330 minicomponent so that they can process individual webhooks
 
+27400 Thin channel scripts that pull changelog items from the remote service and return them to the CMF plugin to be stored and processed
+
 
 
