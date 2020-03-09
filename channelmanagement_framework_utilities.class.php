@@ -42,6 +42,53 @@ class channelmanagement_framework_utilities
 
 	/*
 	 *
+	 * Mark a changelog item completed
+	 *
+	 */
+	public static function complete_queue_item ( $item_id = 0  )
+	{
+		if ( !isset($item_id ) || (int)$item_id == 0 ) {
+			throw new Exception( "item_id not set" );
+		}
+
+		$query = "UPDATE #__jomres_channelmanagement_framework_changelog_queue_items SET
+						 `completed` = 1, 
+						 WHERE 
+						 `id` = ".$item_id." 
+						 LIMIT 1
+						 ";
+		doInsertSql($query);
+	}
+
+/*
+ *
+ * Get changelog queue items to be processed by 27410 scripts
+ *
+ */
+	public static function get_all_queue_items_for_property ( $property_uid = 0 )
+	{
+		if ( !isset($property_uid ) || (int)$property_uid == 0 ) {
+			throw new Exception( "property_uid not set" );
+		}
+
+		$query = "SELECT id ,`channel_name`, `property_uid`, `unique_id`, `date_added`, `completed`, `item`  FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE property_uid = ".(int)$property_uid.' ORDER BY id';
+		return doSelectSql($query );
+	}
+
+	/*
+	 *
+	 * Get changelog queue items to be processed by 27410 scripts
+	 *
+	 */
+	public static function get_queue_items ( )
+	{
+		$query = "SELECT id ,`channel_name`, `property_uid`, `unique_id`, `date_added`, `completed`, `item`  FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE completed = 0 ";
+		return doSelectSql($query );
+	}
+
+
+	/*
+	 *
 	 * Insert or update a queue item. If the item's unique id already exists for this property then just the item description and completed flag can be set
 	 *
 	 * Returns the id of the queue item
@@ -72,7 +119,7 @@ class channelmanagement_framework_utilities
 
 		// See if the queue item already exists
 
-		$query = "SELECT id , channel_id FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE unique_id = '".$item['unique_id']."' LIMIT 1";
+		$query = "SELECT unique_id FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE unique_id = '".$item['unique_id']."' LIMIT 1";
 		$result = doSelectSql($query , 1 );
 
 		if ( empty($result) ) {

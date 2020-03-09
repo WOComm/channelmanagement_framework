@@ -48,8 +48,17 @@ class j06000cron_process_remote_changelog_items
 			return;
 		}
 
-		$MiniComponents->triggerEvent('27410');
+		$queue_items = channelmanagement_framework_utilities:: get_queue_items();
 
+		// Queue items need to be triggered as asynchronous tasks, fire and forget. Let the task decide if the job completed successfully
+		if ( !empty($queue_items) ) {
+			foreach ( $queue_items as $item ) {
+				$target_minicomponent = 'channelmanagement_'.$item->channel_name.'_process_changelog_queue_item';
+				if ($MiniComponents->eventSpecificlyExistsCheck('27410',$target_minicomponent)) {
+					$result = $MiniComponents->specificEvent('27410', $target_minicomponent , $item );
+				}
+			}
+		}
 	}
 
 
