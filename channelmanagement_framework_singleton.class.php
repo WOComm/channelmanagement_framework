@@ -43,7 +43,7 @@ class channelmanagement_framework_singleton
 			}
 		}
 		
-		if (!empty($user_channels)) {
+		if (!empty($user_channels) && is_array($thin_channels)) {
 			$user_channels = array_merge( $user_channels , $thin_channels );
 			set_showtime('user_channels' , $user_channels );
 		} else {
