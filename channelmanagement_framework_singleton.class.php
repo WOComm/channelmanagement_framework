@@ -70,9 +70,48 @@ class channelmanagement_framework_singleton
 		// Channels build reports of their existence
 		$MiniComponents->triggerEvent('21001');
 
+		 // System is a special API user who has godlike abilities, however for each channel, system must also be announced so that API calls that API endpoints make for their own use can also be done.
+
+		$this->register_system_channels();
+
+		// Now we can add channel records for each user/installed channel
 		$this->register_channels();
 	}
-	
+
+	// The "system" oauth client can be used by Jomres functionality so that one api endpoint can call another api endpoint. To do that it needs it's own channel records assigned to it so first we need to register ourselves with the
+	private function register_system_channels()
+	{
+		$existing_system_channels = $this->get_system_channels();
+
+		$results = array();
+		foreach ($this->current_channels as $channel ) {
+			if ( !in_array( $channel['channel_name'] , $existing_system_channels) ) {
+				$method = 'POST';
+				$endpoint = 'cmf/channel/announce/'.$channel['channel_name'].'/'.urlencode($channel['channel_friendly_name']);
+
+				$results[] = $this->call_api->send_request( $method , $endpoint , [
+					'params' => json_encode($channel['features'])
+					] ,
+					array()
+				);
+			}
+		}
+	}
+
+	private function get_system_channels()
+	{
+		$query = "SELECT channel_name FROM #__jomres_channelmanagement_framework_channels WHERE cms_user_id = 9999999999";
+		$channel_names = doSelectSql($query);
+
+		$existing_channels = array();
+		if (!empty($channel_names)) {
+			foreach ( $channel_names as $chan) {
+				$existing_channels[] = $chan->channel_name;
+			}
+		}
+
+		return $existing_channels;
+	}
 	public function register_channels()
 	{
 		$user_channels = get_showtime("user_channels");

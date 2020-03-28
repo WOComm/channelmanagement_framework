@@ -53,6 +53,7 @@ jr_define('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORTED',"Successfully imported
 jr_define('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_FAILED',"Failed to import property ");
 
 jr_define('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT',"Import properties");
+jr_define('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE',"Import property");
 
 
 jr_define('CHANNELMANAGEMENT_FRAMEWORK_TARIFF_IMPORTING',"Starting import of tariff ");

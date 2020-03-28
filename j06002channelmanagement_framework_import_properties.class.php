@@ -62,17 +62,32 @@ class j06002channelmanagement_framework_import_properties {
 		
 		$output['PROPERTY_ID_STRING'] = "";
 
+		$output['_JRPORTAL_LISTBOOKINGS_HEADER_PROPERTY_ID']	=  jr_gettext('_JRPORTAL_LISTBOOKINGS_HEADER_PROPERTY_ID', '_JRPORTAL_LISTBOOKINGS_HEADER_PROPERTY_ID', false);
+		$output['_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_NAME']		=  jr_gettext('_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_NAME', '_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_NAME', false);
+		$output['_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_TOWN']		=  jr_gettext('_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_TOWN', '_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_TOWN', false);
+		$output['_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_REGION']	=  jr_gettext('_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_REGION', '_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_REGION', false);
+		$output['_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_COUNTRY']	=  jr_gettext('_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_COUNTRY', '_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_COUNTRY', false);
+		$output['_JOMRES_FRONT_PTYPE']							=  jr_gettext('_JOMRES_FRONT_PTYPE', '_JOMRES_FRONT_PTYPE', false);
+
 		$property_names = array();
+
 		foreach ($remote_properties as $remote_property) {
+
 			if ( $remote_property[ "remote_property_id"] > 0 && !in_array ( $remote_property[ "remote_property_id"] , $local_property_remote_uids ) ) {
 				$r=array();
 				$output['PROPERTY_ID_STRING'] .= $remote_property[ "remote_property_id"].",";
 				$r["REMOTE_PROPERTY_ID"] = $remote_property[ "remote_property_id"];
 				$r["REMOTE_PROPERTY_NAME"] = $remote_property[ "remote_property_name"];
+				$r["REMOTE_TOWN"] = $remote_property[ "remote_property_town"];
+				$r["REMOTE_REGION"] = $remote_property[ "remote_property_region"];
+				$r["REMOTE_COUNTRY"] = $remote_property[ "remote_property_country"];
+				$r["REMOTE_TYPE"] = $remote_property[ "remote_property_type_title"];
+				$r["REMOTE_TYPE"] = $remote_property[ "remote_property_type_title"];
+				$r["CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE"] = jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE', 'CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE', false);
 				$property_names[] = $r;
 			}
 		}
-		
+
 		$output['PROPERTY_ID_STRING'] = substr( $output['PROPERTY_ID_STRING'], 0, strlen( $output['PROPERTY_ID_STRING'] ) - 1 );
 		$output['CHANNEL_NAME'] = $channel_name;
 		

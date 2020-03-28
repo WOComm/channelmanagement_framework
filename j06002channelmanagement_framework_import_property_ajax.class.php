@@ -34,10 +34,12 @@ class j06002channelmanagement_framework_import_property_ajax {
 
 		try {
 			$class_name = 'channelmanagement_'. $channel_name.'_import_property';
+			jr_import($class_name);
 			$response = $class_name::import_property( $channel_name , $remote_property_id , $JRUser->userid );
 			echo json_encode($response);
 		}
 		catch (Exception $e) {
+			var_dump($e);exit;
 			echo (object) array ( "success" => false , "message" => $e->getMessage() );
 		}
 		
