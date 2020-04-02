@@ -101,14 +101,15 @@
 
 	<table id="list_remote_properties" width="100%" class="table table-striped">
 		<thead>
-		<tr>
-			<th>{_JRPORTAL_LISTBOOKINGS_HEADER_PROPERTY_ID}</th>
-			<th>{_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_NAME}</th>
-			<th>{_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_TOWN}</th>
-			<th>{_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_REGION}</th>
-			<th>{_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_COUNTRY}</th>
-			<th>{_JOMRES_FRONT_PTYPE}</th>
-		</tr>
+			<tr>
+				<th></th>
+				<th>{_JRPORTAL_LISTBOOKINGS_HEADER_PROPERTY_ID}</th>
+				<th>{_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_NAME}</th>
+				<th>{_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_TOWN}</th>
+				<th>{_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_REGION}</th>
+				<th>{_JOMRES_COM_MR_VRCT_PROPERTY_HEADER_COUNTRY}</th>
+				<th>{_JOMRES_FRONT_PTYPE}</th>
+			</tr>
 		</thead>
 		<tbody>
 			<patTemplate:tmpl name="property_names" unusedvars="strip">
@@ -125,9 +126,8 @@
 				<td>{REMOTE_COUNTRY}</td>
 				<td>{REMOTE_TYPE}</td>
 			</tr>
-
-		</patTemplate:tmpl>
-	</tbody>
-<table>
+			</patTemplate:tmpl>
+		</tbody>
+	</table>
 
 </patTemplate:tmpl>
