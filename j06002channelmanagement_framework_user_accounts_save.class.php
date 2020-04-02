@@ -40,14 +40,8 @@ class j06002channelmanagement_framework_user_accounts_save {
 		$channelmanagement_framework_user_accounts = new channelmanagement_framework_user_accounts();
 		$channelmanagement_framework_user_accounts->save_accounts_for_user ( $thisJRUser->id , $account_data );
 		// When done
-		if ($return_url != '') {
-			jomresRedirect($return_url, '');
-		} else {
-			jomresRedirect(jomresURL(JOMRES_SITEPAGE_URL.'&task=channelmanagement_framework_user_accounts'), '');
+		jomresRedirect(jomresURL(JOMRES_SITEPAGE_URL.'&task=channelmanagement_framework_user_accounts'), '');
 		}
-		
-		
-	}
 
 	// This must be included in every Event/Mini-component
 	function getRetVals()
