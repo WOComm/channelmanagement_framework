@@ -34,14 +34,14 @@ class j06002channelmanagement_framework {
 			echo '<p class="alert alert-danger">'.jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_THIN_CHANNELS_NOT_INSTALLED','CHANNELMANAGEMENT_FRAMEWORK_THIN_CHANNELS_NOT_INSTALLED',false).'</p>';
 			return;
 		}
-		
+
 		// Channels can run sanity checks and trigger redirects if required
 		$thin_channels = get_showtime("thin_channels");
+
 		foreach ($thin_channels as $channel) {
 			$MiniComponents->specificEvent('06002', 'channelmanagement_'.$channel['channel_name'].'_dashboard');
 		}
-		
-		//var_dump($user_channels);exit;
+
 		$basic_property_details = jomres_singleton_abstract::getInstance('basic_property_details');
 		$basic_property_details->get_property_name_multi($JRUser->authorisedProperties);
 		
@@ -52,38 +52,37 @@ class j06002channelmanagement_framework {
 		$pageoutput = array();
 		
 		$already_shown = array(); // A user can have duplicate channels listed if they're a super manager, so we will keep an array of properties already shown to keep the list unique
-		
 		foreach ($user_channels as $channel ) {
-			
-			$local_properties = channelmanagement_framework_properties::get_local_property_ids_for_channel( $channel['channel_name'] );
-			
-			foreach ($local_properties as $local_property) {
-				if ( !in_array( $local_property->local_property_uid , $already_shown) ) {
-					$r = array();
-					
-					$r['CHANNEL']				= $channel['channel_friendly_name'];
-					$r['LOCAL_PROPERTY_UID']	= $local_property->local_property_uid;
-					$r['REMOTE_PROPERTY_UID']	= $local_property->remote_property_uid;
-					$r['PROPERTY_NAME']			= $basic_property_details->get_property_name( $local_property->local_property_uid , false );
 
-					$remote_admin_url = '';
-					$func_name = 'get_remote_admin_uri_'.$channel['channel_name'];
-					if (function_exists($func_name)) {
-						$remote_admin_url = get_remote_admin_uri_rentalsunited($local_property->remote_property_uid);			// TODO !!!
-					}
-					
-					$r['BADGE_REMOTE_EDIT']				= '';
-					if ($remote_admin_url!= '' ) {
-						$r['BADGE_REMOTE_EDIT'] = '<a href="'.$remote_admin_url.'" target="_blank"><span class="badge badge-info">'.jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_EDIT_REMOTE_PROPERTY','CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_EDIT_REMOTE_PROPERTY',false).'</span></a>';
-					}
-					
-					$r['BADGE_LOCAL_EDIT'] = '<a href="'.get_property_details_url($local_property->local_property_uid).'" ><span class="badge badge-info">'.jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_EDIT_LOCAL_PROPERTY','CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_EDIT_LOCAL_PROPERTY',false).'</span></a>';
-					
-					$r['BADGE_LOCAL_DELETE'] = '<a href="'.JOMRES_SITEPAGE_URL.'&task=channelmanagement_framework_delete_property&id='.$local_property->local_property_uid.'&channel_name='.$channel['channel_name'].'" ><span class="badge badge-danger">'.jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_DELETE_LOCAL_PROPERTY','CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_DELETE_LOCAL_PROPERTY',false).'</span></a>';
-					
-					$rows[] = $r;
+			$local_properties = channelmanagement_framework_properties::get_local_property_ids_for_channel($channel['id']);
 
-					$already_shown[] = $local_property->local_property_uid;
+			if (!empty($local_properties)) {
+				foreach ($local_properties as $local_property) {
+					if ( in_array($local_property['local_property_uid'], $JRUser->authorisedProperties) &&  !in_array($local_property['local_property_uid'], $already_shown)) {
+						$r = array();
+						$r['CHANNEL'] = $channel['channel_friendly_name'];
+						$r['LOCAL_PROPERTY_UID'] = $local_property['local_property_uid'];
+						$r['REMOTE_PROPERTY_UID'] = $local_property['remote_property_uid'];
+						$r['PROPERTY_NAME'] = $basic_property_details->get_property_name($local_property['local_property_uid'], false);
+						$remote_admin_url = '';
+
+						if (isset($local_property['remote_data']->origin_management_url)) {
+							$remote_admin_url =$local_property['remote_data']->origin_management_url;
+						}
+
+						$r['BADGE_REMOTE_EDIT'] = '';
+						if ($remote_admin_url != '') {
+							$r['BADGE_REMOTE_EDIT'] = '<a href="' . $remote_admin_url . '" target="_blank"><span class="badge badge-info">' . jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_EDIT_REMOTE_PROPERTY', 'CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_EDIT_REMOTE_PROPERTY', false) . '</span></a>';
+						}
+
+						$r['BADGE_LOCAL_EDIT'] = '<a href="' . get_property_details_url($local_property['local_property_uid']) . '" ><span class="badge badge-info">' . jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_EDIT_LOCAL_PROPERTY', 'CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_EDIT_LOCAL_PROPERTY', false) . '</span></a>';
+
+						$r['BADGE_LOCAL_DELETE'] = '<a href="' . JOMRES_SITEPAGE_URL . '&task=channelmanagement_framework_delete_property&id=' . $local_property['local_property_uid'] . '&channel_name=' . $channel['channel_name'] . '" ><span class="badge badge-danger">' . jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_DELETE_LOCAL_PROPERTY', 'CHANNELMANAGEMENT_FRAMEWORK_DASHBOARD_LIST_PROPERTIES_DELETE_LOCAL_PROPERTY', false) . '</span></a>';
+
+						$rows[] = $r;
+
+						$already_shown[] = $local_property['local_property_uid'];
+					}
 				}
 			}
 		}

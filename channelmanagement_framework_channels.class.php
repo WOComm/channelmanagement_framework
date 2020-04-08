@@ -45,16 +45,15 @@ class channelmanagement_framework_channels
 		$channels = array();
 		if (!empty($result)) {
 			foreach ( $result as $channel) {
-				$channels[] = array (
+				$channels[$channel->channel_name] = array (
 					"id" => $channel->id,
 					"channel_friendly_name" => jomres_decode($channel->channel_friendly_name),
 					"channel_name" => $channel->channel_name,
 					"cms_user_id" => $channel->cms_user_id,
-					"params" => unserialize($channel->params)
+					"params" => ''
 				);
 			}
 		}
-
 		return $channels;
 	}
 }

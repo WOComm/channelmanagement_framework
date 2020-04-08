@@ -31,10 +31,10 @@ class channelmanagement_framework_singleton
 		set_showtime('user_channels' , $user_channels );
 		
 		// Channels build reports of their existence
-		$MiniComponents =jomres_getSingleton('mcHandler');
-		$MiniComponents->triggerEvent('21001');
+	//	$MiniComponents =jomres_getSingleton('mcHandler');
+	//	$MiniComponents->triggerEvent('21001');
 
-		$thin_channels = get_showtime("thin_channels");
+	/*	$thin_channels = get_showtime("thin_channels");
 		
 		$this->current_channels = array();
 		if ( !empty($thin_channels)) {
@@ -42,13 +42,13 @@ class channelmanagement_framework_singleton
 				$this->current_channels[] = $channel ;
 			}
 		}
-		
-		if (!empty($user_channels) && is_array($thin_channels)) {
-			$user_channels = array_merge( $user_channels , $thin_channels );
-			set_showtime('user_channels' , $user_channels );
-		} else {
-			set_showtime('user_channels' , $thin_channels );
-		}
+var_dump($thin_channels);exit;*/
+	//	if (!empty($user_channels) && is_array($thin_channels)) {
+	//		$user_channels = array_merge( $user_channels , $thin_channels );
+	//		set_showtime('user_channels' , $user_channels );
+	//	} else {
+	//		set_showtime('user_channels' , $thin_channels );
+	//	}
 
 		$this->init();
 	}
@@ -100,7 +100,7 @@ class channelmanagement_framework_singleton
 
 	private function get_system_channels()
 	{
-		$query = "SELECT channel_name FROM #__jomres_channelmanagement_framework_channels WHERE cms_user_id = 9999999999";
+		$query = "SELECT channel_name FROM #__jomres_channelmanagement_framework_channels WHERE cms_user_id = 999999999";
 		$channel_names = doSelectSql($query);
 
 		$existing_channels = array();

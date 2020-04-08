@@ -24,13 +24,20 @@ class j06002channelmanagement_framework_import_properties {
 		$ePointFilepath = get_showtime('ePointFilepath');
 
 		jomres_cmsspecific_addheaddata('javascript', JOMRES_NODE_MODULES_RELPATH.'blockui-npm/', 'jquery.blockUI.js');
-		
+
 		$JRUser									= jomres_singleton_abstract::getInstance( 'jr_user' );
-		
-		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton'); 
-		
+		jr_import('channelmanagement_framework_channels');
+		$channelmanagement_framework_channels = new channelmanagement_framework_channels();
+		$user_channels = $channelmanagement_framework_channels->get_user_channels($JRUser->userid);
+
 		$channel_name	= trim(filter_var($_GET['channel_name'], FILTER_SANITIZE_SPECIAL_CHARS));
-		
+
+		if (!isset($user_channels[$channel_name])) {
+			throw new Exception( "Channel id can't be found." );
+
+		}
+
+
 		$properties_list_class_name = 'channelmanagement_'.$channel_name.'_list_remote_properties';
 		jr_import($properties_list_class_name);
 		if ( !class_exists($properties_list_class_name) ) {
@@ -38,7 +45,7 @@ class j06002channelmanagement_framework_import_properties {
 		}
 		
 		
-		$local_properties = channelmanagement_framework_properties::get_local_property_ids_for_channel( $channel_name );
+		$local_properties = channelmanagement_framework_properties::get_local_property_ids_for_channel( $user_channels[$channel_name]['id'] );
 		$local_property_remote_uids = array();
 		if (!empty($local_properties)) {
 			foreach ($local_properties as $local_property) {

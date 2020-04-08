@@ -31,9 +31,9 @@ class channelmanagement_framework_user_accounts
 
 	function find_channel_owners_for_property($property_uid)
 	{
-		$query = "SELECT manager_id FROM #__jomres_managers_propertys_xref WHERE `property_uid` = ".(int)$property_uid." ";
+		$query = "SELECT cms_user_id as manager_id FROM #__jomres_channelmanagement_framework_property_uid_xref WHERE `property_uid` = ".(int)$property_uid." ";
 		$result = doSelectSql($query);
-		
+
 		$jomres_users = jomres_singleton_abstract::getInstance('jomres_users');
 		$jomres_users->get_users();
 			
