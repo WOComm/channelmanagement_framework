@@ -26,7 +26,7 @@ class j06002channelmanagement_framework {
 		$JRUser									= jomres_singleton_abstract::getInstance( 'jr_user' );
 		
 		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton'); 
-		
+
 		// Channels can run sanity checks and trigger redirects if required
 		$user_channels = get_showtime("user_channels");
 

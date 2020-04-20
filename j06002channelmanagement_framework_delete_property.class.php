@@ -51,7 +51,7 @@ class j06002channelmanagement_framework_delete_property {
 			else
 				jomresRedirect( jomresURL( JOMRES_SITEPAGE_URL . "&task=channelmanagement_framework" ) );
 		} else {
-			logging::log_message("Failed to delete property ".$property_uid, 'CHANNEL_MANAGEMENT_FRAMEWORK', 'WARNING');
+			logging::log_message("Failed to delete property ".$property_uid, 'CMF', 'WARNING');
 		}
 		
 

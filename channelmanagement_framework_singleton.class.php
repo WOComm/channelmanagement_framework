@@ -20,37 +20,24 @@ class channelmanagement_framework_singleton
 	{
 		jr_import('jomres_call_api');
 		
-		$this->call_api = new jomres_call_api('system');
+		$this->call_api = new jomres_call_api('system');  // Sets up the system user's data if needed
 		$this->current_channels = array();
-		
-		$JRUser									= jomres_singleton_abstract::getInstance( 'jr_user' );
-		jr_import('channelmanagement_framework_channels');
-		$channelmanagement_framework_channels = new channelmanagement_framework_channels();
-		$user_channels = $channelmanagement_framework_channels->get_user_channels($JRUser->userid);
-		
-		set_showtime('user_channels' , $user_channels );
-		
-		// Channels build reports of their existence
-	//	$MiniComponents =jomres_getSingleton('mcHandler');
-	//	$MiniComponents->triggerEvent('21001');
+		$this->manager_id = 0;
 
-	/*	$thin_channels = get_showtime("thin_channels");
-		
-		$this->current_channels = array();
-		if ( !empty($thin_channels)) {
-			foreach ($thin_channels as $channel ) {
-				$this->current_channels[] = $channel ;
-			}
+		// System is a special API user who has godlike abilities, however for each channel, system must also be announced so that API calls that API endpoints make for their own use can also be done.
+		$this->register_system_channels();
+
+		$this->current_task = get_showtime("current_webhook_task");
+		if ( is_null($this->current_task) || $this->current_task == '') {
+			$this->current_task = get_showtime('task');
 		}
-var_dump($thin_channels);exit;*/
-	//	if (!empty($user_channels) && is_array($thin_channels)) {
-	//		$user_channels = array_merge( $user_channels , $thin_channels );
-	//		set_showtime('user_channels' , $user_channels );
-	//	} else {
-	//		set_showtime('user_channels' , $thin_channels );
-	//	}
 
-		$this->init();
+		// There are only two scenarios we want to initialise this class, 1. If it's a "channelmanagement..." task, or if it's a webhook. If it's a webhook then the webhook watcher will manually run init, otherwise we'll check the name of the task and then initialise
+
+		if (strpos(get_showtime('task') , "channelmanagement" )  === 0 ) {
+			$this->init();
+		}
+
 	}
 
 	/*
@@ -59,20 +46,35 @@ var_dump($thin_channels);exit;*/
 	Here we will trigger the channel report minicomponents and then use the api to confirm their existence. If they don't exist, we'll create them in the database using POST {{cm_url}}/cmf/channel/announce/{{channel_name}}/{{channel_friendly_name}}
 	
 	*/
-	public function init()
+	public function init( $manager_id = 0 )
 	{
+		logging::log_message($this->current_task." -- "."rest_api_communicate init() initialising manager : ".$manager_id , 'CMF', 'DEBUG' , '' );
 
-		if ( get_showtime("task") != 'channelmanagement_framework' && get_showtime("task") != '' ) { // We only need to do this on the main page (I hope)
-			return;
+		if ( $manager_id === 0 ) {
+			logging::log_message($this->current_task." -- "."THERE : ", 'CMF', 'DEBUG' , 'Calling method '.debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4)[1]['function'] );
+
+			$JRUser				= jomres_singleton_abstract::getInstance( 'jr_user' );
+			$this->manager_id	= $JRUser->userid;
+		} else {
+			logging::log_message($this->current_task." -- "."AND BACK AGAIN : ", 'CMF', 'DEBUG' , '' );
+
+			$this->manager_id	= $manager_id;
 		}
+
+		logging::log_message($this->current_task." -- "."rest_api_communicate init() initialised manager_id : ".$this->manager_id , 'CMF', 'DEBUG' , '' );
+
+		jr_import('channelmanagement_framework_channels');
+		$channelmanagement_framework_channels = new channelmanagement_framework_channels();
+		$user_channels = $channelmanagement_framework_channels->get_user_channels($this->manager_id);
+
+		set_showtime('user_channels' , $user_channels );
 
 		$MiniComponents =jomres_getSingleton('mcHandler');
 		// Channels build reports of their existence
 		$MiniComponents->triggerEvent('21001');
 
-		 // System is a special API user who has godlike abilities, however for each channel, system must also be announced so that API calls that API endpoints make for their own use can also be done.
 
-		$this->register_system_channels();
+
 
 		// Now we can add channel records for each user/installed channel
 		$this->register_channels();
@@ -119,8 +121,7 @@ var_dump($thin_channels);exit;*/
 		if (!empty($user_channels)) {
 			foreach ($user_channels as $channel ) {
 				try {
-					$JRUser									= jomres_singleton_abstract::getInstance( 'jr_user' );
-					$headers = array ( "X-JOMRES-proxy_id: ".(int)$JRUser->userid );
+					$headers = array ( "X-JOMRES-proxy_id: ".(int)$this->manager_id );
 
 					$method = 'GET';
 					$endpoint = 'cmf/channel/announce/'.$channel['channel_name'];  // Endpoint that confirms the channel's existence
@@ -142,7 +143,7 @@ var_dump($thin_channels);exit;*/
 					$this->current_channels[ $result->data->response ] = $channel ;
 				}
 				catch (Exception $e) {
-					logging::log_message("Tried to add ".$channel['channel_name']."to database but failed ", 'CHANNEL_MANAGEMENT_FRAMEWORK', 'WARNING');
+					logging::log_message("Tried to add ".$channel['channel_name']."to database but failed ", 'CMF', 'WARNING');
 				}
 			}
 
@@ -164,16 +165,16 @@ var_dump($thin_channels);exit;*/
 			throw new Exception( "Endpoint not passed" );
 		}
 		
-		$JRUser									= jomres_singleton_abstract::getInstance( 'jr_user' );
-		
-		$headers = array ( "X-JOMRES-channel-name: ".$channel_name , "X-JOMRES-proxy_id: ".(int)$JRUser->userid );
+		$headers = array ( "X-JOMRES-channel-name: ".$channel_name , "X-JOMRES-proxy_id: ".(int)$this->manager_id );
+
+		logging::log_message("rest_api_communicate Headers : ".serialize($headers) , 'CMF', 'DEBUG' , '' );
 
 		try {
 			$result = $this->call_api->send_request( $method , $endpoint , $data , $headers );
 			return $result;
 			}
 		catch (Exception $e) {
-			logging::log_message("Tried to communicate with ".$endpoint." endpoint but failed ", 'CHANNEL_MANAGEMENT_FRAMEWORK', 'WARNING');
+			logging::log_message("Tried to communicate with ".$endpoint." endpoint but failed ", 'CMF', 'WARNING');
 		}
 	}
 

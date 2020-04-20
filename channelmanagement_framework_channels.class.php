@@ -36,7 +36,7 @@ class channelmanagement_framework_channels
 	function get_user_channels ( $cms_user_id = 0 ) 
 	{
 		if ($cms_user_id ==0 ) {
-			throw new Exception ( "CMS user id not set");
+			throw new Exception ( "channelmanagement_framework_channels - get_user_channels - CMS user id not set");
 		}
 		
 		$query = " SELECT id , channel_name , channel_friendly_name , params , cms_user_id FROM #__jomres_channelmanagement_framework_channels WHERE cms_user_id = ".(int)$cms_user_id;

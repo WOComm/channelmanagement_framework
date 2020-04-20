@@ -41,9 +41,11 @@ class j07310watcher_authmethod_process_channelmanagement_framework_webhook
 			return;
 		}
 
-		// This script will collate and send information to the remote site using the authentication information provided in the componentArgs variable.
 		$ePointFilepath=get_showtime('ePointFilepath');
 		$this->retVals = false;
+
+		// Not currently using this and right now it creates log items that confuse matters
+		return;
 
 		// $messages =  unserialize($componentArgs["payload"]); // Need to do this to get messages in 07320 scripts
 		$messages = $componentArgs; // In 07310 scripts we can access the componentArgs variable
@@ -61,8 +63,8 @@ class j07310watcher_authmethod_process_channelmanagement_framework_webhook
 			$task = get_showtime('task');
 		}
 		
-		logging::log_message("Received deferred message with contents " , 'CHANNEL_MANAGEMENT_FRAMEWORK', 'DEBUG' , serialize( $webhook_messages ) );
-		logging::log_message("Received deferred message task ".$task , 'CHANNEL_MANAGEMENT_FRAMEWORK', 'DEBUG' , serialize($componentArgs) );
+		logging::log_message("CMF instant webhook handler : Received instant message with contents " , 'CMF', 'DEBUG' , serialize( $webhook_messages ) );
+		logging::log_message("CMF instant webhook handler : Received instant message task ".$task , 'CMF', 'DEBUG' , serialize($componentArgs) );
 
 		$non_processing_tasks = array ( // A number of tasks should not result in webhooks being sent onwards to the app server.
 			);
@@ -83,7 +85,7 @@ class j07310watcher_authmethod_process_channelmanagement_framework_webhook
 			}
 
 			foreach ( $webhook_messages as $webhook_notification ) {
-				logging::log_message("Webhook triggered ".$webhook_notification->webhook_event , 'CHANNEL_MANAGEMENT_FRAMEWORK', 'DEBUG' , '' );
+				logging::log_message("CMF instant webhook handler :  Webhook triggered ".$webhook_notification->webhook_event , 'CMF', 'DEBUG' , '' );
 				$data = $webhook_notification->data;
 				
 				if (isset($data) && $data !== false && isset($webhook_notification->webhook_event) ) { // The data, whatever it is, has been collected, let's send it off to the remote site
@@ -116,7 +118,7 @@ class j07310watcher_authmethod_process_channelmanagement_framework_webhook
 				}
 			}
 		}
-	logging::log_message("Completed Watcher's run." , 'CHANNEL_MANAGEMENT_FRAMEWORK', 'DEBUG' , '' );
+	logging::log_message("CMF instant webhook handler : Completed Watcher's run." , 'CMF', 'DEBUG' , '' );
 	}
 
 	

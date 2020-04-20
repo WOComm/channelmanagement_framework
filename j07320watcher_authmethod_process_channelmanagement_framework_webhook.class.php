@@ -69,8 +69,8 @@ class j07320watcher_authmethod_process_channelmanagement_framework_webhook
 			$task = get_showtime('task');
 		}
 		
-		logging::log_message("Received deferred message with contents " , 'CHANNEL_MANAGEMENT_FRAMEWORK', 'DEBUG' , serialize( $webhook_messages ) );
-		logging::log_message("Received deferred message task ".$task , 'CHANNEL_MANAGEMENT_FRAMEWORK', 'DEBUG' , serialize($componentArgs) );
+		logging::log_message("CMF deferred webhook handler : Received deferred message with contents ".serialize( $webhook_messages ) , 'CMF', 'DEBUG' , serialize( $webhook_messages ) );
+		// logging::log_message("Received deferred message task ".$task , 'CMF', 'DEBUG' , serialize($componentArgs) );
 
 		$non_processing_tasks = array ( // A number of tasks should not result in webhooks being sent onwards to the app server.
 			);
@@ -89,10 +89,26 @@ class j07320watcher_authmethod_process_channelmanagement_framework_webhook
 			$manager_accounts = array();
 			if ( isset( $property_uid ) && $property_uid > 0 )  {
 				$manager_accounts = $channelmanagement_framework_user_accounts->find_channel_owners_for_property($property_uid);
+
+				if (!empty($manager_accounts)) {
+					reset($manager_accounts);
+					$first_managers_id = key($manager_accounts);
+
+					if ( !isset($manager_accounts[$first_managers_id]['user_id']) ||  $manager_accounts[$first_managers_id]['user_id'] == 0 ) {
+						throw new Exception ( "Cannot identify property manager's id");
+					}
+					logging::log_message(get_showtime("task")." -- "."Acting on behalf of manager : ".serialize($manager_accounts) , 'CMF', 'DEBUG' , '' );
+
+					$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+
+					logging::log_message(get_showtime("task")." -- "."Sending manager id  : ".serialize($manager_accounts[$first_managers_id]['user_id']) , 'CMF', 'DEBUG' , '' );
+
+					$channelmanagement_framework_singleton->init($manager_accounts[$first_managers_id]['user_id']); // When a manager is using the CMF to admin properties, the system will find their ID by looking at the JRUser object however webhook tasks will be other users (e.g. guests) therefore we can't use that, so when dealing with webhooks we need to explicitly set the manager's id by re-running the init method
+				}
 			}
 
 			foreach ( $webhook_messages as $webhook_notification ) {
-				logging::log_message("Webhook triggered ".$webhook_notification->webhook_event , 'CHANNEL_MANAGEMENT_FRAMEWORK', 'DEBUG' , '' );
+				logging::log_message("CMF deferred webhook handler : Webhook triggered ".$webhook_notification->webhook_event , 'CMF', 'DEBUG' , '' );
 				$data = $webhook_notification->data;
 				
 				if (isset($data) && $data !== false && isset($webhook_notification->webhook_event) ) { // The data, whatever it is, has been collected, let's send it off to the remote site
@@ -105,10 +121,12 @@ class j07320watcher_authmethod_process_channelmanagement_framework_webhook
 						"channel_data" => $channel_data, // Pass the channel data. The webhook event may have been triggered by a channel. This allows the called plugin's handler to decide if it wants to ignore the event (such as bookings created by itself
 						"managers" => $manager_accounts
 						]);
+				} else {
+					logging::log_message("CMF webhook handler : No data for ".$webhook_notification->webhook_event." so not calling any scripts" , 'CMF', 'DEBUG' , '' );
 				}
 			}
 		}
-	logging::log_message("Completed Watcher's run." , 'CHANNEL_MANAGEMENT_FRAMEWORK', 'DEBUG' , '' );
+	logging::log_message("CMF deferred webhook handler : Completed Watcher's run." , 'CMF', 'DEBUG' , '' );
 	}
 
 	

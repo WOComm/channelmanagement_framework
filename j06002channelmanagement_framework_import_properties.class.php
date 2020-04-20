@@ -46,10 +46,11 @@ class j06002channelmanagement_framework_import_properties {
 		
 		
 		$local_properties = channelmanagement_framework_properties::get_local_property_ids_for_channel( $user_channels[$channel_name]['id'] );
+
 		$local_property_remote_uids = array();
 		if (!empty($local_properties)) {
 			foreach ($local_properties as $local_property) {
-				$local_property_remote_uids[] = $local_property->remote_property_uid;
+				$local_property_remote_uids[] = $local_property['remote_property_uid'];
 			}
 			
 		}
@@ -82,7 +83,6 @@ class j06002channelmanagement_framework_import_properties {
 		$property_names = array();
 
 		foreach ($remote_properties as $remote_property) {
-
 			if ( $remote_property[ "remote_property_id"] > 0 && !in_array ( $remote_property[ "remote_property_id"] , $local_property_remote_uids ) ) {
 				$r=array();
 				$output['PROPERTY_ID_STRING'] .= $remote_property[ "remote_property_id"].",";
@@ -98,16 +98,21 @@ class j06002channelmanagement_framework_import_properties {
 			}
 		}
 
-		$output['PROPERTY_ID_STRING'] = substr( $output['PROPERTY_ID_STRING'], 0, strlen( $output['PROPERTY_ID_STRING'] ) - 1 );
-		$output['CHANNEL_NAME'] = $channel_name;
-		
-		$pageoutput[] = $output;
-		$tmpl = new patTemplate();
-		$tmpl->addRows( 'pageoutput', $pageoutput );
-		$tmpl->addRows( 'property_names', $property_names );
-		$tmpl->setRoot( $ePointFilepath.'templates'.JRDS.find_plugin_template_directory() );
-		$tmpl->readTemplatesFromInput( 'channelmanagement_framework_import_properties.html' );
-		echo $tmpl->getParsedTemplate();
+		if ( !empty($property_names)) {
+			$output['PROPERTY_ID_STRING'] = substr( $output['PROPERTY_ID_STRING'], 0, strlen( $output['PROPERTY_ID_STRING'] ) - 1 );
+			$output['CHANNEL_NAME'] = $channel_name;
+
+			$pageoutput[] = $output;
+			$tmpl = new patTemplate();
+			$tmpl->addRows( 'pageoutput', $pageoutput );
+			$tmpl->addRows( 'property_names', $property_names );
+			$tmpl->setRoot( $ePointFilepath.'templates'.JRDS.find_plugin_template_directory() );
+			$tmpl->readTemplatesFromInput( 'channelmanagement_framework_import_properties.html' );
+			echo $tmpl->getParsedTemplate();
+		} else {
+			echo '<p class="alert alert-danger">No properties remain to be imported</p>';
+		}
+
 		
 	}
 
