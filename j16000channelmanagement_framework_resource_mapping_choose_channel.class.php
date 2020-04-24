@@ -28,11 +28,11 @@ class j16000channelmanagement_framework_resource_mapping_choose_channel{
 		$pageoutput = array();
 			
 		
-		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton'); 
-
 		// Channels build reports of their existence
-		$thin_channels = $channelmanagement_framework_singleton->current_channels;
-		
+		$MiniComponents =jomres_getSingleton('mcHandler');
+		$MiniComponents->triggerEvent('21001');
+		$thin_channels = get_showtime("thin_channels");
+
 		if (!empty($thin_channels)) {
 			
 			$channel_options = array();

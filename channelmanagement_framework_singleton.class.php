@@ -73,9 +73,6 @@ class channelmanagement_framework_singleton
 		// Channels build reports of their existence
 		$MiniComponents->triggerEvent('21001');
 
-
-
-
 		// Now we can add channel records for each user/installed channel
 		$this->register_channels();
 	}
@@ -114,12 +111,21 @@ class channelmanagement_framework_singleton
 
 		return $existing_channels;
 	}
+
+	/*
+	 * Before a user can connect to the local API, they need to be associated with a channel
+	 * Because we're using the CMF, rather than naked API then the CMF will register the channel on the user's behalf.
+	 */
 	public function register_channels()
 	{
-		$user_channels = get_showtime("user_channels");
+		$MiniComponents =jomres_getSingleton('mcHandler');
+		// Channels build reports of their existence
+		$MiniComponents->triggerEvent('21001');
 
-		if (!empty($user_channels)) {
-			foreach ($user_channels as $channel ) {
+		$available_thin_channels = get_showtime("thin_channels");
+
+		if (!empty($available_thin_channels)) {
+			foreach ($available_thin_channels as $channel ) {
 				try {
 					$headers = array ( "X-JOMRES-proxy_id: ".(int)$this->manager_id );
 
