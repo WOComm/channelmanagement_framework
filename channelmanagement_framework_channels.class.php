@@ -56,4 +56,21 @@ class channelmanagement_framework_channels
 		}
 		return $channels;
 	}
+
+	function get_all_channels_ids()
+	{
+		$query = " SELECT id , channel_name FROM #__jomres_channelmanagement_framework_channels ";
+		$result = doSelectSql($query);
+
+		$channels = array();
+		if (!empty($result)) {
+			foreach ( $result as $channel) {
+				$channels[$channel->channel_name][] = array (
+					"id" => $channel->id,
+					"channel_name" => $channel->channel_name
+				);
+			}
+		}
+		return $channels;
+	}
 }

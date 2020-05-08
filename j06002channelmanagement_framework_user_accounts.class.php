@@ -96,6 +96,10 @@ class j06002channelmanagement_framework_user_accounts {
 			}
 		}
 
+		if (empty($rows)) {
+			$msg = "No channels require account information";
+			jomresRedirect(jomresURL(JOMRES_SITEPAGE_URL.'&task=channelmanagement_framework'), $msg );
+		}
 		$output = array();
 		$pageoutput = array();
 

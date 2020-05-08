@@ -26,10 +26,11 @@ class channelmanagement_framework_properties
 		// Normally we'd do this as a query to the local server, however the properties/ids endpoint can't return the remote_data for all properties so instead we'll run the query here
 
 		if ( (int)$channel_id == 0 ) {
-			throw new Exception( '$channel_id not set' );
+			$query = "SELECT `property_uid` , `remote_property_uid` , `remote_data` FROM #__jomres_channelmanagement_framework_property_uid_xref";
+		} else {
+			$query = "SELECT `property_uid` , `remote_property_uid` , `remote_data` FROM #__jomres_channelmanagement_framework_property_uid_xref WHERE `channel_id` = ".(int)$channel_id;
 		}
 
-		$query = "SELECT `property_uid` , `remote_property_uid` , `remote_data` FROM #__jomres_channelmanagement_framework_property_uid_xref WHERE `channel_id` = ".(int)$channel_id;
 		$properties = doSelectSql($query);
 
 		$property_uids = array();

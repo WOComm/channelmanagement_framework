@@ -41,7 +41,10 @@ class j10501channelmanagement_framework_administrator_account_fields
 
 		$MiniComponents->triggerEvent('21310');
 		$channel_form_fields = get_showtime('channel_administrator_form_fields');
-		
+
+		if (empty($thin_channels)) {
+			return;
+		}
 		$formfields=array();
 		foreach ($thin_channels as $channel ) {
 			$rows = array();
