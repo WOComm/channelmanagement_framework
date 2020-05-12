@@ -54,12 +54,26 @@ class channelmanagement_framework_utilities
 		$query = "UPDATE #__jomres_channelmanagement_framework_changelog_queue_items SET
 						 `completed` = 1, 
 						 WHERE 
-						 `id` = ".$item_id." 
+						 `id` = ".(int)$item_id." 
 						 LIMIT 1
 						 ";
 		doInsertSql($query);
 	}
 
+	public static function increment_attempts ( $item_id = 0  )
+	{
+		if ( !isset($item_id ) || (int)$item_id == 0 ) {
+			throw new Exception( "item_id not set" );
+		}
+
+		$query = "UPDATE #__jomres_channelmanagement_framework_changelog_queue_items SET
+						 attempts = attempts + 1
+						 WHERE 
+						 `id` = ".(int)$item_id." 
+						 LIMIT 1
+						 ";
+		doInsertSql($query);
+	}
 /*
  *
  * Get changelog queue items to be processed by 27410 scripts
@@ -71,7 +85,7 @@ class channelmanagement_framework_utilities
 			throw new Exception( "property_uid not set" );
 		}
 
-		$query = "SELECT id ,`channel_name`, `property_uid`, `unique_id`, `date_added`, `completed`, `item`  FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE property_uid = ".(int)$property_uid.' ORDER BY id';
+		$query = "SELECT id ,`channel_name`, `property_uid`, `unique_id`, `date_added`, `completed`, `attempts` , `item`  FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE property_uid = ".(int)$property_uid.' ORDER BY id';
 		return doSelectSql($query );
 	}
 
@@ -82,7 +96,7 @@ class channelmanagement_framework_utilities
 	 */
 	public static function get_queue_items ( )
 	{
-		$query = "SELECT id ,`channel_name`, `property_uid`, `unique_id`, `date_added`, `completed`, `item`  FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE completed = 0 ";
+		$query = "SELECT id ,`channel_name`, `property_uid`, `unique_id`, `date_added`, `completed`, `attempts` , `item`  FROM #__jomres_channelmanagement_framework_changelog_queue_items";
 		return doSelectSql($query );
 	}
 
@@ -122,7 +136,7 @@ class channelmanagement_framework_utilities
 		$query = "SELECT unique_id FROM #__jomres_channelmanagement_framework_changelog_queue_items WHERE unique_id = '".$item['unique_id']."' LIMIT 1";
 		$result = doSelectSql($query , 1 );
 
-		if ( empty($result) ) {
+		if ( empty($result) || $result == false ) {
 			$query = "INSERT INTO #__jomres_channelmanagement_framework_changelog_queue_items
 						(
 						`channel_name`,

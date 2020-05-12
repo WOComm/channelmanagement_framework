@@ -42,6 +42,8 @@ class j06000cron_process_remote_changelog_items
 			return;
 		}
 
+		$number_of_attempts_allowed = 5;
+
 		// Let's check that the CM framework plugin is installed. We won't throw an error here as it's possible for this script to run even before the CMF has been setup
 		jr_import('channelmanagement_framework_user_accounts');
 		if (!class_exists('channelmanagement_framework_user_accounts')) {
@@ -53,9 +55,17 @@ class j06000cron_process_remote_changelog_items
 		// Queue items need to be triggered as asynchronous tasks, fire and forget. Let the task decide if the job completed successfully
 		if ( !empty($queue_items) ) {
 			foreach ( $queue_items as $item ) {
-				$target_minicomponent = 'channelmanagement_'.$item->channel_name.'_process_changelog_queue_item';
-				if ($MiniComponents->eventSpecificlyExistsCheck('27410',$target_minicomponent)) {
-					$result = $MiniComponents->specificEvent('27410', $target_minicomponent , $item );
+
+				if ( (int)$item->attempts <= $number_of_attempts_allowed && (int)$item->completed != 1 ) {
+					$target_minicomponent = 'channelmanagement_'.$item->channel_name.'_process_changelog_queue_item';
+					if ($MiniComponents->eventSpecificlyExistsCheck('27410',$target_minicomponent)) {
+						$result = $MiniComponents->specificEvent('27410', $target_minicomponent , $item );
+						if ($result) {
+							channelmanagement_framework_utilities::complete_queue_item( $item->id );
+						} else {
+							channelmanagement_framework_utilities::increment_attempts ( $item->id );
+						}
+					}
 				}
 			}
 		}
