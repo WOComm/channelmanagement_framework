@@ -52,7 +52,7 @@ class channelmanagement_framework_utilities
 		}
 
 		$query = "UPDATE #__jomres_channelmanagement_framework_changelog_queue_items SET
-						 `completed` = 1, 
+						 `completed` = 1
 						 WHERE 
 						 `id` = ".(int)$item_id." 
 						 LIMIT 1
