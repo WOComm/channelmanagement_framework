@@ -41,6 +41,31 @@ class channelmanagement_framework_utilities
 	}
 
 	/*
+	*
+	* Used by changelog scripts that want to update a local property
+	*
+	*/
+	public static function get_manager_id_for_property_uid ($property_uid)
+	{
+		$channelmanagement_framework_user_accounts = new channelmanagement_framework_user_accounts();
+		// We need to find the manager's uid so that we can send the call to the local system
+		$manager_accounts = $channelmanagement_framework_user_accounts->find_channel_owners_for_property($property_uid);
+
+		if (empty($manager_accounts)) {
+			throw new Exception( "Tried to get manager id however no managers exist to enable access to API");
+		}
+
+		reset($manager_accounts);
+		$manager_id = key($manager_accounts);
+		if ($manager_id == 0 ) {
+			throw new Exception( "Manager id is 0");
+		}
+
+		return $manager_id;
+	}
+
+
+	/*
 	 *
 	 * Mark a changelog item completed
 	 *
