@@ -36,7 +36,7 @@ class channelmanagement_framework_properties
 		$property_uids = array();
 		if (!empty($properties)) {
 			foreach ($properties as $property ) {
-				$property_uids[] = array ( "local_property_uid" => $property->property_uid , "remote_property_uid" => $property->remote_property_uid ,  "remote_data" => unserialize($property->remote_data));
+				$property_uids[] = array ( "local_property_uid" => $property->property_uid , "remote_property_uid" => $property->remote_property_uid ,  "remote_data" => unserialize(base64_decode($property->remote_data)));
 			}
 		}
 		return $property_uids;
