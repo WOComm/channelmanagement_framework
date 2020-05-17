@@ -22,6 +22,90 @@ class channelmanagement_framework_utilities
 		
 	}
 
+	/*
+	*
+	* Set cross references for a given item type (e.g. extras) for a property
+	*
+	* Send the property uid and the item type, retrieve all remote item ids. Used by scripts that create, update and delete items imported from parents
+	*
+	*/
+	public static function set_cross_references_for_property_uid ( $channel = '' , $property_uid = 0 , $item_type = '' , $remote_id = 0 , $local_id = 0 )
+	{
+		if (!isset($property_uid) || $property_uid == 0 ) {
+			throw new Exception( "Property uid not set" );
+		}
+
+		if (!isset($item_type) || $item_type == '' ) {
+			throw new Exception( "Item type not set" );
+		}
+
+		if (!isset($channel) || $channel == '' ) {
+			throw new Exception( "Channel not set" );
+		}
+
+		if (!isset($remote_id) || $remote_id == 0 ) {
+			throw new Exception( "Remote id not set" );
+		}
+
+		$put_data = array (
+			"property_uid" 			=> $property_uid,
+			"item_type" 			=> $item_type,
+			"remote_id" 			=> $remote_id,
+			"local_id" 				=> $local_id
+		);
+
+		$manager_id = channelmanagement_framework_utilities :: get_manager_id_for_property_uid ( $property_uid );
+
+		jr_import('jomres_call_api');
+		$jomres_call_api = new jomres_call_api('system');
+		$send_response = $jomres_call_api->send_request(
+			"PUT"  ,
+			"cmf/property/cross/reference" ,
+			$put_data ,
+			array (	"X-JOMRES-channel-name: ". $channel, "X-JOMRES-proxy_id: ".$manager_id )
+		);
+	}
+
+	/*
+	*
+	* Get cross references for a given item type (e.g. extras) for a property
+	*
+	* Send the property uid and the item type, retrieve all remote item ids. Used by scripts that create, update and delete items imported from parents
+	*
+	*/
+	public static function get_cross_references_for_property_uid ( $channel = '' , $property_uid = 0 , $item_type = '' )
+	{
+		if (!isset($property_uid) || $property_uid == 0 ) {
+			throw new Exception( "Property uid not set" );
+		}
+
+		if (!isset($item_type) || $item_type == '' ) {
+			throw new Exception( "Item type not set" );
+		}
+
+		if (!isset($channel) || $channel == '' ) {
+			throw new Exception( "Channel not set" );
+		}
+
+		$manager_id = channelmanagement_framework_utilities :: get_manager_id_for_property_uid ( $property_uid );
+
+		jr_import('jomres_call_api');
+		$jomres_call_api = new jomres_call_api('system');
+		$send_response = $jomres_call_api->send_request(
+			"GET"  ,
+			"cmf/property/".$property_uid ,
+			[] ,
+			array (	"X-JOMRES-channel-name: ". $channel, "X-JOMRES-proxy_id: ".$manager_id )
+		);
+
+		if (isset($send_response->data->response->remote_data->cross_references->$item_type)) {
+			return json_decode(json_encode($send_response->data->response->remote_data->cross_references->$item_type), true);
+		} else {
+			return [];
+		}
+
+	}
+
 	public static function get_channel_ids_for_channel_name ( $channel_name = '' )
 	{
 		if (!isset($channel_name) || $channel_name == '' ) {
