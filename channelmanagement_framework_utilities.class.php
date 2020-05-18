@@ -79,10 +79,6 @@ class channelmanagement_framework_utilities
 			throw new Exception( "Property uid not set" );
 		}
 
-		if (!isset($item_type) || $item_type == '' ) {
-			throw new Exception( "Item type not set" );
-		}
-
 		if (!isset($channel) || $channel == '' ) {
 			throw new Exception( "Channel not set" );
 		}
@@ -98,11 +94,20 @@ class channelmanagement_framework_utilities
 			array (	"X-JOMRES-channel-name: ". $channel, "X-JOMRES-proxy_id: ".$manager_id )
 		);
 
-		if (isset($send_response->data->response->remote_data->cross_references->$item_type)) {
-			return json_decode(json_encode($send_response->data->response->remote_data->cross_references->$item_type), true);
+		if ($item_type == '' ) {
+			if (isset($send_response->data->response->remote_data->cross_references)) {
+				return json_decode(json_encode($send_response->data->response->remote_data->cross_references), true);
+			} else {
+				return [];
+			}
 		} else {
-			return [];
+			if (isset($send_response->data->response->remote_data->cross_references->$item_type)) {
+				return json_decode(json_encode($send_response->data->response->remote_data->cross_references->$item_type), true);
+			} else {
+				return [];
+			}
 		}
+
 
 	}
 
