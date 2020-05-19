@@ -35,10 +35,6 @@ class channelmanagement_framework_utilities
 			throw new Exception( "Property uid not set" );
 		}
 
-		if (!isset($item_type) || $item_type == '' ) {
-			throw new Exception( "Item type not set" );
-		}
-
 		if (!isset($channel) || $channel == '' ) {
 			throw new Exception( "Channel not set" );
 		}
@@ -64,6 +60,7 @@ class channelmanagement_framework_utilities
 			$put_data ,
 			array (	"X-JOMRES-channel-name: ". $channel, "X-JOMRES-proxy_id: ".$manager_id )
 		);
+
 	}
 
 	/*
