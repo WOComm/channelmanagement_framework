@@ -86,13 +86,31 @@ class j06002channelmanagement_framework_import_properties {
 			if ( $remote_property[ "remote_property_id"] > 0 && !in_array ( $remote_property[ "remote_property_id"] , $local_property_remote_uids ) ) {
 				$r=array();
 				$output['PROPERTY_ID_STRING'] .= $remote_property[ "remote_property_id"].",";
+
+				$r["REMOTE_TOWN"] = '';
+				$r["REMOTE_REGION"] = '';
+				$r["REMOTE_COUNTRY"] = '';
+				$r["REMOTE_TYPE"] = '';
+
 				$r["REMOTE_PROPERTY_ID"] = $remote_property[ "remote_property_id"];
 				$r["REMOTE_PROPERTY_NAME"] = $remote_property[ "remote_property_name"];
-				$r["REMOTE_TOWN"] = $remote_property[ "remote_property_town"];
-				$r["REMOTE_REGION"] = $remote_property[ "remote_property_region"];
-				$r["REMOTE_COUNTRY"] = $remote_property[ "remote_property_country"];
-				$r["REMOTE_TYPE"] = $remote_property[ "remote_property_type_title"];
-				$r["REMOTE_TYPE"] = $remote_property[ "remote_property_type_title"];
+
+				if (isset( $remote_property[ "remote_property_town"])) {
+					$r["REMOTE_TOWN"] = $remote_property[ "remote_property_town"];
+				}
+
+				if (isset( $remote_property[ "remote_property_region"])) {
+					$r["REMOTE_REGION"] = $remote_property[ "remote_property_region"];
+				}
+
+				if (isset( $remote_property[ "remote_property_country"])) {
+					$r["REMOTE_COUNTRY"] = $remote_property[ "remote_property_country"];
+				}
+
+				if (isset( $remote_property[ "remote_property_type_title"])) {
+					$r["REMOTE_TYPE"] = $remote_property[ "remote_property_type_title"];
+				}
+
 				$r["CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE"] = jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE', 'CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE', false);
 				$property_names[] = $r;
 			}
