@@ -22,8 +22,6 @@ Trigger aide-memoire
 
 21310 get channel account form fields. ADMINISTRATOR Populates the showtime variable channel_form_fields with form names. Used by the j10501channelmanagement_framework_site_channel_accounts script to build account forms
 
-21400 channel management framework specific minicomponents for everything from adding to removing and modifying properties, tariffs etc
-
 27330 Thin channel plugins have a 27330 minicomponent so that they can process individual webhooks
 
 27400 Thin channel scripts that pull changelog items from the remote service and return them to the CMF plugin to be stored and processed
