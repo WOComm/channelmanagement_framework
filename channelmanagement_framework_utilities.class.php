@@ -95,7 +95,7 @@ class channelmanagement_framework_utilities
 			"PUT"  ,
 			"cmf/property/cross/reference" ,
 			$put_data ,
-			array (	"X-JOMRES-channel-name: ". $channel, "X-JOMRES-proxy_id: ".$manager_id )
+			array (	"X-JOMRES-channel-name: ". $channel, "X-JOMRES-proxy-id: ".$manager_id )
 		);
 
 	}
@@ -125,7 +125,7 @@ class channelmanagement_framework_utilities
 			"GET"  ,
 			"cmf/property/".$property_uid ,
 			[] ,
-			array (	"X-JOMRES-channel-name: ". $channel, "X-JOMRES-proxy_id: ".$manager_id )
+			array (	"X-JOMRES-channel-name: ". $channel, "X-JOMRES-proxy-id: ".$manager_id )
 		);
 
 		if ($item_type == '' ) {

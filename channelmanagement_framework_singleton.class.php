@@ -127,7 +127,7 @@ class channelmanagement_framework_singleton
 		if (!empty($available_thin_channels)) {
 			foreach ($available_thin_channels as $channel ) {
 				try {
-					$headers = array ( "X-JOMRES-proxy_id: ".(int)$this->manager_id );
+					$headers = array ( "X-JOMRES-proxy-id: ".(int)$this->manager_id );
 
 					$method = 'GET';
 					$endpoint = 'cmf/channel/announce/'.$channel['channel_name'];  // Endpoint that confirms the channel's existence
@@ -171,7 +171,7 @@ class channelmanagement_framework_singleton
 			throw new Exception( "Endpoint not passed" );
 		}
 		
-		$headers = array ( "X-JOMRES-channel-name: ".$channel_name , "X-JOMRES-proxy_id: ".(int)$this->manager_id );
+		$headers = array ( "X-JOMRES-channel-name: ".$channel_name , "X-JOMRES-proxy-id: ".(int)$this->manager_id );
 
 		logging::log_message("rest_api_communicate Headers : ".serialize($headers) , 'CMF', 'DEBUG' , '' );
 
