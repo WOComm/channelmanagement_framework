@@ -36,7 +36,11 @@ class j10501channelmanagement_framework_administrator_account_fields
 		$MiniComponents->triggerEvent('21001');
 		
 		$thin_channels = get_showtime("thin_channels");
-		
+
+		if (empty($thin_channels) || is_null($thin_channels) ) {
+			return;
+		}
+
 		$configurationPanel->startPanel(jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_USER_ACCOUNTS', 'CHANNELMANAGEMENT_FRAMEWORK_USER_ACCOUNTS', false));
 
 		$MiniComponents->triggerEvent('21310');

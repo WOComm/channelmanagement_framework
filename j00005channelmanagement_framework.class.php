@@ -61,12 +61,15 @@ class j00005channelmanagement_framework {
 		if ($property_uid > 0)
 			{
 			$mrConfig = getPropertySpecificSettings($property_uid);
-			
-			
-			
+
+
+			$MiniComponents->triggerEvent('21001');
+
+			$thin_channels = get_showtime("thin_channels");
+
 			$jomres_menu = jomres_singleton_abstract::getInstance('jomres_menu');
-			
-			if ($mrConfig[ 'is_real_estate_listing' ] != '1' && !get_showtime('is_jintour_property')) 
+
+			if ( ($mrConfig[ 'is_real_estate_listing' ] != '1' && !get_showtime('is_jintour_property')) && !is_null($thin_channels) )
 				{
 				if ($thisJRUser->accesslevel >= 70) 
 					{
