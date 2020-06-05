@@ -408,7 +408,11 @@ class channelmanagement_framework_utilities
 		$jrConfig = $siteConfig->get();
 		
 		$mkdir_mode = 0755;
-		
+
+		if (!@fopen($url, "r")) {
+			return false;
+		}
+
 		$result = $MiniComponents->triggerEvent('03379' , array( "property_uid" => $property_uid ) );
 		$resource_types = $MiniComponents->miniComponentData[ '03379' ];
 		
@@ -443,7 +447,7 @@ class channelmanagement_framework_utilities
 		if (!is_dir(JOMRES_TEMP_ABSPATH."temp_images_dirty".JRDS)) {
 			mkdir(JOMRES_TEMP_ABSPATH."temp_images_dirty".JRDS, $mkdir_mode, true);
 		}
-		
+
 		$resized_file_name = basename($url);
 		$file = JOMRES_TEMP_ABSPATH."temp_images_dirty".JRDS . basename($url);
 		$fileHandle = fopen($file, "w+");
