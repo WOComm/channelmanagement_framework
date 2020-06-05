@@ -46,6 +46,9 @@ class j07320watcher_authmethod_process_channelmanagement_framework_webhook
 			throw new Exception('Error: Channel management framework plugin not installed');
 		}
 
+		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+		$channelmanagement_framework_singleton->init(999999999);
+
 		$channelmanagement_framework_user_accounts = new channelmanagement_framework_user_accounts();
 		
 		// This script will collate and send information to the remote site using the authentication information provided in the componentArgs variable.
@@ -99,23 +102,19 @@ class j07320watcher_authmethod_process_channelmanagement_framework_webhook
 					}
 					logging::log_message(get_showtime("task")." -- "."Acting on behalf of manager : ".serialize($manager_accounts) , 'CMF', 'DEBUG' , '' );
 
-					$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
-
-					logging::log_message(get_showtime("task")." -- "."Sending manager id  : ".serialize($manager_accounts[$first_managers_id]['user_id']) , 'CMF', 'DEBUG' , '' );
-
-					$channelmanagement_framework_singleton->init($manager_accounts[$first_managers_id]['user_id']); // When a manager is using the CMF to admin properties, the system will find their ID by looking at the JRUser object however webhook tasks will be other users (e.g. guests) therefore we can't use that, so when dealing with webhooks we need to explicitly set the manager's id by re-running the init method
+					$channelmanagement_framework_singleton->proxy_manager_id = $manager_accounts[$first_managers_id]['user_id'];
 				}
 			}
 
 			foreach ( $webhook_messages as $webhook_notification ) {
 				logging::log_message("CMF deferred webhook handler : Webhook triggered ".$webhook_notification->webhook_event , 'CMF', 'DEBUG' , '' );
 				$data = $webhook_notification->data;
-				
+
 				if (isset($data) && $data !== false && isset($webhook_notification->webhook_event) ) { // The data, whatever it is, has been collected, let's send it off to the remote site
 					$data->task = $webhook_notification->webhook_event;
 					
 					// Hand the webhook notification to individual tasks to see if they need to process the webhook (with multiple webhooks being called, this might be problematic, with timeouts if they take too long, might need to make those asynchronous tasks, or add them to some kind of queue to be processed individually)
-					
+
 					$MiniComponents->triggerEvent('27330' , [ 
 						"webhook_notification" => $webhook_notification , // Pass the individual notifications, allow the thin plugin's handler to decide what it's going to do with it, if anything
 						"channel_data" => $channel_data, // Pass the channel data. The webhook event may have been triggered by a channel. This allows the called plugin's handler to decide if it wants to ignore the event (such as bookings created by itself

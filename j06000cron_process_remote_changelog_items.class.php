@@ -41,6 +41,8 @@ class j06000cron_process_remote_changelog_items
 
 			return;
 		}
+		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+		$channelmanagement_framework_singleton->init(999999999);
 
 		$number_of_attempts_allowed = 5;
 

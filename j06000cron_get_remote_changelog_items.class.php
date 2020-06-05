@@ -42,6 +42,8 @@ class j06000cron_get_remote_changelog_items
             return;
         }
 
+		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+		$channelmanagement_framework_singleton->init(999999999);
         // Let's check that the CM framework plugin is installed. We won't throw an error here as it's possible for this script to run even before the CMF has been setup
         jr_import('channelmanagement_framework_user_accounts');
         if (!class_exists('channelmanagement_framework_user_accounts')) {

@@ -41,6 +41,9 @@ class j07310watcher_authmethod_process_channelmanagement_framework_webhook
 			return;
 		}
 
+		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+		$channelmanagement_framework_singleton->init(999999999);
+
 		$ePointFilepath=get_showtime('ePointFilepath');
 		$this->retVals = false;
 
@@ -85,36 +88,18 @@ class j07310watcher_authmethod_process_channelmanagement_framework_webhook
 			}
 
 			foreach ( $webhook_messages as $webhook_notification ) {
+
+				if ($componentArgs['webhook_notification']->data->manager_id == 0 ) {
+					throw new Exception('Error: Manager id not set');
+				}
+				$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+				$channelmanagement_framework_singleton->proxy_manager_id = $webhook_notification->data->manager_id;
+
 				logging::log_message("CMF instant webhook handler :  Webhook triggered ".$webhook_notification->webhook_event , 'CMF', 'DEBUG' , '' );
 				$data = $webhook_notification->data;
 				
 				if (isset($data) && $data !== false && isset($webhook_notification->webhook_event) ) { // The data, whatever it is, has been collected, let's send it off to the remote site
 					$data->task = $webhook_notification->webhook_event;
-
-/* 					$this_plugin_tasks = array( "booking_added" , "booking_marked_noshow" );
-					if ( in_array( $data->task , $this_plugin_tasks )) {
-
-						$current_contract_details = jomres_singleton_abstract::getInstance('basic_contract_details');
-						$current_contract_details->gather_data($data->contract_uid, $data->property_uid);
-						
-						if (!array_key_exists($data->contract_uid, $current_contract_details->contract)) { // The contract uid is wrong. Was it for a different property?
-							return;
-							}
-
-						switch ( $data->task )
-							{
-							case 'booking_added':
-								$context = 'syndication_guests';
-								$this->send_notification_to_app_server( $context , 'booking_added/'	, $data = array( "email" => $current_contract_details->contract[$data->contract_uid]['guestdeets']['email']) );
-								break;
-							case 'booking_marked_noshow';
-								$context = 'syndication_guests';
-								$this->send_notification_to_app_server( $context , 'booking_noshow/', $data = array( "email" => $current_contract_details->contract[$data->contract_uid]['guestdeets']['email']) );
-								break;
-							}
-					} */
-					
-
 				}
 			}
 		}

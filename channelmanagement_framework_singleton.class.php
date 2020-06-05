@@ -23,7 +23,7 @@ class channelmanagement_framework_singleton
 		$this->call_api = new jomres_call_api('system');  // Sets up the system user's data if needed
 		$this->current_channels = array();
 		$this->manager_id = 0;
-
+		$this->proxy_manager_id = 0;
 		// System is a special API user who has godlike abilities, however for each channel, system must also be announced so that API calls that API endpoints make for their own use can also be done.
 		$this->register_system_channels();
 
@@ -38,6 +38,7 @@ class channelmanagement_framework_singleton
 			$this->init();
 		}
 
+
 	}
 
 	/*
@@ -51,13 +52,9 @@ class channelmanagement_framework_singleton
 		logging::log_message($this->current_task." -- "."rest_api_communicate init() initialising manager : ".$manager_id , 'CMF', 'DEBUG' , '' );
 
 		if ( $manager_id === 0 ) {
-			logging::log_message($this->current_task." -- "."THERE : ", 'CMF', 'DEBUG' , 'Calling method '.debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4)[1]['function'] );
-
 			$JRUser				= jomres_singleton_abstract::getInstance( 'jr_user' );
 			$this->manager_id	= $JRUser->userid;
 		} else {
-			logging::log_message($this->current_task." -- "."AND BACK AGAIN : ", 'CMF', 'DEBUG' , '' );
-
 			$this->manager_id	= $manager_id;
 		}
 
@@ -166,16 +163,24 @@ class channelmanagement_framework_singleton
 		if ( $channel_name == '' ) {
 			throw new Exception( "Channel not passed" );
 		}
-		
+
 		if ( $method == '' ) {
 			throw new Exception( "Method not passed" );
 		}
-		
+
 		if ( $endpoint == '' ) {
 			throw new Exception( "Endpoint not passed" );
 		}
-		
-		$headers = array ( "X-JOMRES-channel-name: ".$channel_name , "X-JOMRES-proxy-id: ".(int)$this->manager_id );
+
+		if ( $this->manager_id == 0 ) {
+			throw new Exception( "Manager id is incorrect" );
+		}
+
+		if ( $this->proxy_manager_id == 0 ) {
+			throw new Exception( "Proxy manager id is incorrect" );
+		}
+
+		$headers = array ( "X-JOMRES-channel-name: ".$channel_name , "X-JOMRES-proxy-id: ".(int)$this->proxy_manager_id );
 
 		logging::log_message("rest_api_communicate Headers : ".serialize($headers) , 'CMF', 'DEBUG' , '' );
 
