@@ -82,8 +82,12 @@ class channelmanagement_framework_singleton
 	{
 		$existing_system_channels = $this->get_system_channels();
 
+		$MiniComponents =jomres_getSingleton('mcHandler');
+		$MiniComponents->triggerEvent('21001');
+		$thin_channels = get_showtime("thin_channels");
+
 		$results = array();
-		foreach ($this->current_channels as $channel ) {
+		foreach ($thin_channels as $channel ) {
 			if ( !in_array( $channel['channel_name'] , $existing_system_channels) ) {
 				$method = 'POST';
 				$endpoint = 'cmf/channel/announce/'.$channel['channel_name'].'/'.urlencode($channel['channel_friendly_name']);
