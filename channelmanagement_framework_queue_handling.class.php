@@ -119,7 +119,8 @@ class channelmanagement_framework_queue_handling
 		}
 
 		// See if the queue item already exists
-		if ( !empty($this->current_queue_unique_ids) || !in_array( $item['unique_id'] , $this->current_queue_unique_ids ) ) {
+		if ( !in_array( $item['unique_id'] , $this->current_queue_unique_ids ) ) {
+			$this->current_queue_unique_ids[] = $item['unique_id'];
 			$query = "INSERT INTO #__jomres_channelmanagement_framework_changelog_queue_items
 						(
 						`channel_name`,
@@ -136,23 +137,24 @@ class channelmanagement_framework_queue_handling
 						'".$item['unique_id']."',
 						'".date("Y-m-d H:i:s")."',
 						'".(int)$item['completed']."',
-						'".serialize($item['item'])."'
+						'".base64_encode(serialize($item['item']))."'
 						)
 						";
-			$id = doInsertSql($query);
+
+			return doInsertSql($query);
 		} elseif ($update_item_if_exists == true ) {
 			$query = "UPDATE #__jomres_channelmanagement_framework_changelog_queue_items SET
 						 `completed` = '".$item['completed']."', 
-						 `item` = '".serialize($item['item'])."'
+						 `item` = '".base64_encode(serialize($item['item']))."'
 						 WHERE 
 						 `unique_id` = '".$item['unique_id']."' AND
 						 `property_uid` = ".(int)$item['local_property_id']." 
 						 LIMIT 1
 						 ";
 			doInsertSql($query);
-			$id = $item['unique_id'];
+			return $item['unique_id'];
 		}
-		return $id;
+		return false;
 	}
 
 }
