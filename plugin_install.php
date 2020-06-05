@@ -86,7 +86,7 @@ $query = "CREATE TABLE IF NOT EXISTS `#__jomres_channelmanagement_framework_chan
 	`unique_id` varchar(255) UNIQUE,
 	`date_added` datetime default NULL ,
 	`completed` BOOL NOT NULL DEFAULT '0',
-	`attempts` int(3),
+	`attempts` int(3)  default 0,
 	`item` longtext,
   PRIMARY KEY  (id)
 )";
