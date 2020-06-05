@@ -22,6 +22,32 @@ class channelmanagement_framework_utilities
 		
 	}
 
+
+	/*
+	 *
+	 * Find all manager ids for a channel by channel name
+	 *
+	 * Pass channel name, return manager IDs array
+	 *
+	 */
+	public static function get_manager_ids_by_channel_name( $channel_name = '' )
+	{
+		if (!isset($channel_name) || $channel_name == '' ) {
+			throw new Exception( "Channel name not set" );
+		}
+
+		$reply =[];
+
+		$query = "SELECT id , cms_user_id FROM #__jomres_channelmanagement_framework_channels WHERE channel_name = '".$channel_name."' ";
+		$result = doSelectSql($query);
+		if (!empty($result)) {
+			foreach ($result as $r) {
+				$reply[$r->cms_user_id] = array ( "cms_user_id" => $r->cms_user_id , "channel_id" => $r->id );
+			}
+		}
+		return $reply;
+	}
+
 	/*
 	 *
 	 * Search for a Jomres region id, using fuzzy searching
