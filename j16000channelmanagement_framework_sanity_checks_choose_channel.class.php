@@ -12,7 +12,7 @@
 defined( '_JOMRES_INITCHECK' ) or die( 'Direct Access to this file is not allowed.' );
 // ################################################################
 
-class j16000channelmanagement_framework_resource_mapping_choose_channel{
+class j16000channelmanagement_framework_sanity_checks_choose_channel{
 	function __construct($componentArgs)
 		{
 		// Must be in all minicomponents. Minicomponents with templates that can contain editable text should run $this->template_touch() else just return 
