@@ -40,11 +40,14 @@ class j06002channelmanagement_framework_delete_property {
 			$output_now = true;
 		
 		$this->retVals = '';
-		
-		
-		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton'); 
+
+		$JRUser									= jomres_singleton_abstract::getInstance( 'jr_user' );
+
+		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+		$channelmanagement_framework_singleton->proxy_manager_id = $JRUser->userid;
+
 		$response = $channelmanagement_framework_singleton->rest_api_communicate( $channel_name , 'DELETE' , 'cmf/property/local/'.$property_uid );
-		
+
 		if ( isset($response->data->response) && $response->data->response == true ) {
 			if (!$output_now)
 				$this->retVals = $response;
