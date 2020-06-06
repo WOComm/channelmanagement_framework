@@ -518,9 +518,11 @@ class channelmanagement_framework_utilities
 			'small',
 			$resource_id_required
 		);
-		
-		unlink($file); 
-		
+
+		if (file_exists($file)) {
+			unlink($file);
+		}
+
 		$jomres_media_centre_images->get_images($property_uid);
 		
 		$MiniComponents->triggerEvent('03383');
