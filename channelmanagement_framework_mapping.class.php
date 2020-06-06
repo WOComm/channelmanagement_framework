@@ -31,7 +31,8 @@ class channelmanagement_framework_mapping
 			throw new Exception( "local_jomres_type not passed" );
 		}
 
-		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton'); 
+		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+		$channelmanagement_framework_singleton->proxy_manager_id = 999999999;
 		$response = $channelmanagement_framework_singleton->rest_api_communicate( $channel , 'GET' , 'cmf/dictionary/items/map/'.$local_jomres_type);
 
 		if (isset($response->data->response->params)) {
@@ -59,8 +60,9 @@ class channelmanagement_framework_mapping
 			throw new Exception( "data not passed" );
 		}
 		
-		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton'); 
-		
+		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
+		$channelmanagement_framework_singleton->proxy_manager_id = 999999999;
+
 		$post_data = array ("params" => json_encode($data_object) );
 		$response = $channelmanagement_framework_singleton->rest_api_communicate( $channel , 'POST' , 'cmf/dictionary/items/map/'.$remote_item_type.'/'.$local_jomres_type , $post_data );
 

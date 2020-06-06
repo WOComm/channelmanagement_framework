@@ -46,6 +46,7 @@ class j07320watcher_authmethod_process_channelmanagement_framework_webhook
 			throw new Exception('Error: Channel management framework plugin not installed');
 		}
 
+
 		$channelmanagement_framework_singleton = jomres_singleton_abstract::getInstance('channelmanagement_framework_singleton');
 		$channelmanagement_framework_singleton->init(999999999);
 
