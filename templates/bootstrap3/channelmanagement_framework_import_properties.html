@@ -33,11 +33,10 @@
 							jomresJquery( "#property_id_being_imported" ).html( property_id );
 							jomresJquery.ajax({ url: '{JOMRES_SITEPAGE_URL_AJAX}&task=channelmanagement_framework_import_property_ajax&remote_property_id=' + property_id + '&channel_name='+channel_name, success: function (data) {
 								json = JSON.parse(data);
-								console.log(json.success);
 								if (json.success == true ) {
 									populateDiv("wrapper_"+ property_id , '<div class="alert alert-success">'+property_imported+'</div>');
 								} else {
-									populateDiv("wrapper_"+ property_id , '<div class="alert alert-danger">'+failed_to_import+'</div>');
+									populateDiv("wrapper_"+ property_id , '<div class="alert alert-danger">'+failed_to_import+' '+json.message+'</div>');
 								}
 
 								return (data);

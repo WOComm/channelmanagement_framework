@@ -40,13 +40,9 @@ class j06002channelmanagement_framework_import_property_ajax {
 			echo json_encode($response);
 		}
 		catch (Exception $e) {
-			echo (object) array ( "success" => false , "message" => $e->getMessage() );
+			$message = $e->getMessage();
+			echo json_encode ((object) array ( "success" => false , "message" => $e->getMessage() ) );
 		}
-		
-		
-		
-		
-		
 	}
 
 	// This must be included in every Event/Mini-component
