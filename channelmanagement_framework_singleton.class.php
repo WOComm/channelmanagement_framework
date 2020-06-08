@@ -84,18 +84,21 @@ class channelmanagement_framework_singleton
 		$thin_channels = get_showtime("thin_channels");
 
 		$results = array();
-		foreach ($thin_channels as $channel ) {
-			if ( !in_array( $channel['channel_name'] , $existing_system_channels) ) {
-				$method = 'POST';
-				$endpoint = 'cmf/channel/announce/'.$channel['channel_name'].'/'.urlencode($channel['channel_friendly_name']);
+		if (!empty($thin_channels)) {
+			foreach ($thin_channels as $channel ) {
+				if ( !in_array( $channel['channel_name'] , $existing_system_channels) ) {
+					$method = 'POST';
+					$endpoint = 'cmf/channel/announce/'.$channel['channel_name'].'/'.urlencode($channel['channel_friendly_name']);
 
-				$results[] = $this->call_api->send_request( $method , $endpoint , [
-					'params' => json_encode($channel['features'])
+					$results[] = $this->call_api->send_request( $method , $endpoint , [
+						'params' => json_encode($channel['features'])
 					] ,
-					array()
-				);
+						array()
+					);
+				}
 			}
 		}
+
 	}
 
 	private function get_system_channels()
