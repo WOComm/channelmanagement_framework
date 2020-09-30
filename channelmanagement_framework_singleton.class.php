@@ -29,12 +29,12 @@ class channelmanagement_framework_singleton
 
 		$this->current_task = get_showtime("current_webhook_task");
 		if ( is_null($this->current_task) || $this->current_task == '') {
-			$this->current_task = get_showtime('task');
+			$this->current_task = jomresGetParam($_REQUEST, 'task', '') ;
 		}
 
 		// There are only two scenarios we want to initialise this class, 1. If it's a "channelmanagement..." task, or if it's a webhook. If it's a webhook then the webhook watcher will manually run init, otherwise we'll check the name of the task and then initialise
 
-		if (strpos(get_showtime('task') , "channelmanagement" )  === 0 ) {
+		if ( isset( $this->current_task ) && strpos( $this->current_task , "channelmanagement" )  === 0 ) {
 			$this->init();
 		}
 
