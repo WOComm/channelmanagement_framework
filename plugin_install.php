@@ -93,6 +93,6 @@ $query = "CREATE TABLE IF NOT EXISTS `#__jomres_channelmanagement_framework_chan
 
 doInsertSql($query,"");
 
-
+$jomres_cron = jomres_singleton_abstract::getInstance('jomres_cron');
 $jomres_cron->addJob('get_remote_changelog_items', 'QH', '');
 $jomres_cron->addJob('process_remote_changelog_items', 'QH', '');
