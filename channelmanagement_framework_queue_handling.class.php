@@ -157,4 +157,5 @@ class channelmanagement_framework_queue_handling
 		return false;
 	}
 
+
 }

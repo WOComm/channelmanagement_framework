@@ -26,9 +26,9 @@ class channelmanagement_framework_properties
 		// Normally we'd do this as a query to the local server, however the properties/ids endpoint can't return the remote_data for all properties so instead we'll run the query here
 
 		if ( (int)$channel_id == 0 ) {
-			$query = "SELECT `property_uid` , `remote_property_uid` , `remote_data` FROM #__jomres_channelmanagement_framework_property_uid_xref";
+			$query = "SELECT `property_uid` , `remote_property_uid` , `cms_user_id` , `remote_data` FROM #__jomres_channelmanagement_framework_property_uid_xref";
 		} else {
-			$query = "SELECT `property_uid` , `remote_property_uid` , `remote_data` FROM #__jomres_channelmanagement_framework_property_uid_xref WHERE `channel_id` = ".(int)$channel_id;
+			$query = "SELECT `property_uid` , `remote_property_uid` , `cms_user_id` , `remote_data` FROM #__jomres_channelmanagement_framework_property_uid_xref WHERE `channel_id` = ".(int)$channel_id;
 		}
 
 		$properties = doSelectSql($query);
@@ -36,7 +36,7 @@ class channelmanagement_framework_properties
 		$property_uids = array();
 		if (!empty($properties)) {
 			foreach ($properties as $property ) {
-				$property_uids[] = array ( "local_property_uid" => $property->property_uid , "remote_property_uid" => $property->remote_property_uid ,  "remote_data" => unserialize(base64_decode($property->remote_data)));
+				$property_uids[] = array ( "local_property_uid" => $property->property_uid , "remote_property_uid" => $property->remote_property_uid ,  "local_cms_user_id" => $property->cms_user_id , "remote_data" => unserialize(base64_decode($property->remote_data)));
 			}
 		}
 		return $property_uids;

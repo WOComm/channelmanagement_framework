@@ -98,6 +98,13 @@
 		</div>
 	</div>
 
+	<div class="row-fluid">
+		<div class="col-md-12">
+			<div class="alert alert-info">
+				{CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_UNPUBLISHED_CANNOT_IMPORT}
+			</div>
+		</div>
+	</div>
 	<table id="list_remote_properties" width="100%" class="table table-striped">
 		<thead>
 			<tr>
@@ -115,7 +122,7 @@
 			<tr>
 				<td>
 					<div id="wrapper_{REMOTE_PROPERTY_ID}">
-						<button class="btn btn-default" onClick="import_property({REMOTE_PROPERTY_ID});">{CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE}</button>
+						<button class="btn btn-default" {DISABLED} onClick="import_property({REMOTE_PROPERTY_ID});">{CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE}</button>
 					</div>
 				</td>
 				<td>{REMOTE_PROPERTY_ID}</td>

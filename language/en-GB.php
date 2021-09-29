@@ -54,7 +54,7 @@ jr_define('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_FAILED',"Failed to import
 
 jr_define('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT',"Import all properties");
 jr_define('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_ONE',"Import property");
-
+jr_define('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_UNPUBLISHED_CANNOT_IMPORT',"Properties that are not marked as published/activated on the remote server, or properties that don't have any changelog items, cannot be imported.");
 
 jr_define('CHANNELMANAGEMENT_FRAMEWORK_TARIFF_IMPORTING',"Starting import of tariff ");
 jr_define('CHANNELMANAGEMENT_FRAMEWORK_TARIFF_IMPORTED',"Successfully imported tariff ");

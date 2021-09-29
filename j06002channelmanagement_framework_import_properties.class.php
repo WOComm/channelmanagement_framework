@@ -78,22 +78,37 @@ class j06002channelmanagement_framework_import_properties {
 		$output['_JOMRES_FRONT_PTYPE']									=  jr_gettext('_JOMRES_FRONT_PTYPE', '_JOMRES_FRONT_PTYPE', false);
 		$output['CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_FAILED']	=  jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_FAILED', 'CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_FAILED', false);
 		$output['CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORTED']	=  jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORTED', 'CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORTED', false);
-
+        $output['CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_UNPUBLISHED_CANNOT_IMPORT']	=  jr_gettext('CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_UNPUBLISHED_CANNOT_IMPORT', 'CHANNELMANAGEMENT_FRAMEWORK_PROPERTY_IMPORT_UNPUBLISHED_CANNOT_IMPORT', false);
 
 		$property_names = array();
 
 		foreach ($remote_properties as $remote_property) {
 			if ( $remote_property[ "remote_property_id"] > 0 && !in_array ( $remote_property[ "remote_property_id"] , $local_property_remote_uids ) ) {
 				$r=array();
-				$output['PROPERTY_ID_STRING'] .= $remote_property[ "remote_property_id"].",";
+
 
 				$r["REMOTE_TOWN"] = '';
 				$r["REMOTE_REGION"] = '';
 				$r["REMOTE_COUNTRY"] = '';
 				$r["REMOTE_TYPE"] = '';
+                $r["DISABLED"] = '';
 
 				$r["REMOTE_PROPERTY_ID"] = $remote_property[ "remote_property_id"];
 				$r["REMOTE_PROPERTY_NAME"] = $remote_property[ "remote_property_name"];
+
+                if (isset( $remote_property[ "remote_property_changelog_item_count"])) {
+                    if ((string)$remote_property[ "remote_property_changelog_item_count"] == "0" ) {
+                        $r["DISABLED"] = 'disabled';
+                    }
+                } else {
+                    $output['PROPERTY_ID_STRING'] .= $remote_property[ "remote_property_id"].",";
+                }
+
+                if (isset( $remote_property[ "remote_property_published"])) {
+                    if ((string)$remote_property[ "remote_property_published"] != "1" ) {
+                        $r["DISABLED"] = 'disabled';
+                    }
+                }
 
 				if (isset( $remote_property[ "remote_property_town"])) {
 					$r["REMOTE_TOWN"] = $remote_property[ "remote_property_town"];
